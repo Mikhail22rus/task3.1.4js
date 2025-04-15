@@ -8,11 +8,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +28,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -34,7 +36,15 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
+
     public User() {
+    }
+
+    public User(String name, String username, String password, List<Role> roles) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
     }
 
     public User(Long id, String name, Integer age, String username, String password, List<Role> roles) {
@@ -45,7 +55,6 @@ public class User implements UserDetails {
         this.password = password;
         this.roles = roles;
     }
-
 
     public Long getId() {
         return id;
@@ -103,7 +112,6 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -123,4 +131,35 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(name, user.name) &&
+                Objects.equals(age, user.age) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, age, username, password, roles);
+    }
+
+    @Override
+    public String toString() {
+        return "User {" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }
+
