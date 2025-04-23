@@ -5,6 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
@@ -28,6 +29,10 @@ public class User implements UserDetails {
 
     private String password;
 
+    @Column(name = "email", unique = true)
+    @Email
+    private String email;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
@@ -36,23 +41,24 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
-
     public User() {
     }
 
-    public User(String name, String username, String password, List<Role> roles) {
+    public User(String name, String username, String password, String email, List<Role> roles) {
         this.name = name;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.roles = roles;
     }
 
-    public User(Long id, String name, Integer age, String username, String password, List<Role> roles) {
+    public User(Long id, String name, Integer age, String username, String password, String email, List<Role> roles) {
         this.id = id;
         this.name = name;
         this.age = age;
         this.username = username;
         this.password = password;
+        this.email = email;
         this.roles = roles;
     }
 
@@ -80,20 +86,30 @@ public class User implements UserDetails {
         this.age = age;
     }
 
+    @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<Role> getRoles() {
@@ -104,12 +120,9 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getRole()))
-                .collect(Collectors.toList());
+        return roles;
     }
 
     @Override
@@ -142,24 +155,25 @@ public class User implements UserDetails {
                 Objects.equals(age, user.age) &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
+                Objects.equals(email, user.email) &&
                 Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, username, password, roles);
+        return Objects.hash(id, name, age, username, password, email, roles);
     }
 
     @Override
     public String toString() {
-        return "User {" +
+        return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 ", roles=" + roles +
                 '}';
     }
 }
-
