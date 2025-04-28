@@ -1,13 +1,14 @@
 package ru.kata.spring.boot_security.demo.UserServiceTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class UserServiceTest {
@@ -26,7 +27,6 @@ public class UserServiceTest {
 
         userService.saveUser(user);
 
-        // Проверяем, что пароль сохранен в хэшированном виде
         assertNotEquals("password123", user.getPassword());
         assertTrue(passwordEncoder.matches("password123", user.getPassword()));
     }
