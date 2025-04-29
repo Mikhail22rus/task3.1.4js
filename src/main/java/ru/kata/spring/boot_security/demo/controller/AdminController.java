@@ -37,7 +37,7 @@ public class AdminController {
         model.addAttribute("newUser", new User());
         model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("roles", roleService.getAllRoles());
-        return "admin"; // твой шаблон admin.html
+        return "admin";
     }
 
 
