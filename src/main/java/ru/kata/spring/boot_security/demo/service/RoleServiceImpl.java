@@ -6,6 +6,7 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -27,5 +28,10 @@ public class RoleServiceImpl implements RoleService {
 
     public Role saveRole(Role role) {
         return roleRepository.save(role);
+    }
+
+    @Override
+    public List<Role> getRolesByIds(List<Long> roleIds) {
+        return roleRepository.findAllById(roleIds).stream().collect(Collectors.toList());
     }
 }

@@ -10,4 +10,6 @@ public interface RoleService {
     Role saveRole(Role role);
 
     Role getRoleById(Long id);
+
+    List<Role> getRolesByIds(List<Long> roleIds);
 }

@@ -11,7 +11,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -44,30 +43,28 @@ public class AdminController {
     @PostMapping
     public String userCreate(@ModelAttribute("newUser") User user,
                              @RequestParam("roleIds") List<Long> roleIds) {
-        List<Role> roles = new ArrayList<>();
-        for (Long roleId : roleIds) {
-            Role role = roleService.getRoleById(roleId);
-            roles.add(role);
-        }
+        List<Role> roles = roleService.getRolesByIds(roleIds);
         user.setRoles(roles);
         userService.saveUser(user);
         return "redirect:/admin";
     }
 
 
-    @PostMapping("/update/{id}")
+    @PostMapping("/edit/{id}")
     public String userEdit(@PathVariable("id") Long id,
                            @ModelAttribute("user") User updatedUser,
                            @RequestParam("roleIds") List<Long> roleIds) {
         User existingUser = userService.getUserById(id);
         if (existingUser != null) {
             updatedUser.setId(id);
-            List<Role> roles = new ArrayList<>();
-            for (Long roleId : roleIds) {
-                Role role = roleService.getRoleById(roleId);
-                roles.add(role);
+
+            if (updatedUser.getPassword() == null || updatedUser.getPassword().isEmpty()) {
+                updatedUser.setPassword(existingUser.getPassword());
             }
+            List<Role> roles = roleService.getRolesByIds(roleIds);
+
             updatedUser.setRoles(roles);
+
             userService.saveUser(updatedUser);
         }
         return "redirect:/admin";

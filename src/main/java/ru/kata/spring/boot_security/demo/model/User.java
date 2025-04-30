@@ -155,13 +155,12 @@ public class User implements UserDetails {
                 Objects.equals(age, user.age) &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
-                Objects.equals(email, user.email) &&
-                Objects.equals(roles, user.roles);
+                Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, age, username, password, email, roles);
+        return Objects.hash(id, name, age, username, password, email);
     }
 
     @Override
@@ -173,7 +172,6 @@ public class User implements UserDetails {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
-                ", roles=" + roles +
                 '}';
     }
 }

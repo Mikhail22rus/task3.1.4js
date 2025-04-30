@@ -8,7 +8,7 @@
 </head>
 <body>
 <div sec:authorize="hasRole('ADMIN')">
-    <p>Вы админ!</p>
+    <p></p>
 </div>
 
 <nav class="navbar navbar-dark bg-dark">
@@ -145,6 +145,10 @@
                             <input type="number" class="form-control" name="age" th:value="${user.age}"/>
                         </div>
                         <div class="mb-3">
+                            <label>Новый пароль (оставьте пустым, если не хотите менять)</label>
+                            <input type="password" class="form-control" name="password"/>
+                        </div>
+                        <div class="mb-3">
                             <label>Роли</label>
                             <select class="form-select" name="roleIds" multiple required>
                                 <option th:each="role : ${roles}"
@@ -168,7 +172,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title text-danger">⚠️ Удалить пользователя</h5>
+                    <h5 class="modal-title text-danger">Удалить пользователя</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form th:action="@{'/admin/delete/' + ${user.id}}" method="post">
