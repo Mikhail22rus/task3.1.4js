@@ -25,16 +25,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/login", "/logout", "/register").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN") // автоматически превращается в ROLE_ADMIN
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/api/user/current").authenticated()
+                .antMatchers("/api/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/login")
-                .usernameParameter("email")
                 .successHandler(successUserHandler)
+                .usernameParameter("email")
+                .passwordParameter("password")
                 .and()
-                .logout().permitAll();
+                .logout()
+                .permitAll();
     }
 
     @Bean

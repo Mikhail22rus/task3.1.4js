@@ -22,12 +22,21 @@ public class UserServiceTest {
     @Test
     public void testSaveUser() {
         User user = new User();
+        user.setName("Test Name");
         user.setUsername("testUser");
+        user.setEmail("test@example.com");
         user.setPassword("password123");
 
-        userService.saveUser(user);
+        try {
+            userService.saveUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
 
-        assertNotEquals("password123", user.getPassword());
-        assertTrue(passwordEncoder.matches("password123", user.getPassword()));
+        User savedUser = userService.findByEmail("test@example.com");
+
+        assertNotEquals("password123", savedUser.getPassword());
+        assertTrue(passwordEncoder.matches("password123", savedUser.getPassword()));
     }
 }
