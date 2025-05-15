@@ -13,7 +13,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 import java.security.Principal;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminController {
