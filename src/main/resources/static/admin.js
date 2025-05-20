@@ -1,7 +1,7 @@
 let usersCache = [];
 let rolesCache = [];
 
-// Загрузка списка пользователей
+
 async function loadUsers() {
     try {
         const response = await fetch('/api/admin');
@@ -31,7 +31,7 @@ async function loadUsers() {
     }
 }
 
-// Загрузка списка ролей
+
 async function loadRoles(selectElement) {
     try {
         const response = await fetch('/api/admin/roles');
@@ -51,18 +51,18 @@ async function loadRoles(selectElement) {
     }
 }
 
-/// Загрузка информации о текущем пользователе (для шапки)
+
 async function loadCurrentUser() {
     try {
         const response = await fetch('/user/current');
         if (!response.ok) throw new Error('Failed to load current user');
         const user = await response.json();
 
-        // Получаем имя пользователя и его роли
+
         const name = user.name;
         const roles = user.roles.map(role => role.role).join(', '); // Теперь просто выводим ROLE_ADMIN без замены
 
-        // Формируем строку с именем и ролями
+
         const userInfoText = `${name} (${roles})`;
 
         // Вставляем данные в шапку
@@ -74,7 +74,6 @@ async function loadCurrentUser() {
 }
 
 
-// Открытие модального окна для удаления пользователя
 function openDeleteModalById(id) {
     const user = usersCache.find(u => u.id === id);
     if (!user) return;
@@ -89,7 +88,7 @@ function openDeleteModalById(id) {
     deleteModal.show();
 }
 
-// Открытие модального окна для редактирования пользователя
+
 function openEditModalById(id) {
     const user = usersCache.find(u => u.id === id);
     if (!user) return;
@@ -111,13 +110,13 @@ function openEditModalById(id) {
     editModal.show();
 }
 
-// Инициализация при загрузке страницы
+
 document.addEventListener("DOMContentLoaded", () => {
     loadUsers();
     loadRoles(document.getElementById("newRoles"));
     loadCurrentUser();
 
-    // Обработчик формы удаления пользователя
+
     document.getElementById("deleteForm").addEventListener("submit", async e => {
         e.preventDefault();
         const id = document.getElementById("deleteId").value;
@@ -133,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Обработчик формы добавления пользователя
+
     document.getElementById("addForm").addEventListener("submit", async e => {
         e.preventDefault();
 
@@ -169,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Обработчик формы редактирования пользователя
+
     document.getElementById("editForm").addEventListener("submit", async e => {
         e.preventDefault();
 
