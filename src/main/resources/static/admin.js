@@ -1,6 +1,7 @@
 let usersCache = [];
 let rolesCache = [];
 
+// Загрузка списка пользователей
 async function loadUsers() {
     try {
         const response = await fetch('/api/admin');
@@ -30,6 +31,7 @@ async function loadUsers() {
     }
 }
 
+// Загрузка списка ролей
 async function loadRoles(selectElement) {
     try {
         const response = await fetch('/api/admin/roles');
@@ -49,21 +51,45 @@ async function loadRoles(selectElement) {
     }
 }
 
+/// Загрузка информации о текущем пользователе (для шапки)
+async function loadCurrentUser() {
+    try {
+        const response = await fetch('/user/current');
+        if (!response.ok) throw new Error('Failed to load current user');
+        const user = await response.json();
+
+        // Получаем имя пользователя и его роли
+        const name = user.name;
+        const roles = user.roles.map(role => role.role).join(', '); // Теперь просто выводим ROLE_ADMIN без замены
+
+        // Формируем строку с именем и ролями
+        const userInfoText = `${name} (${roles})`;
+
+        // Вставляем данные в шапку
+        document.getElementById('principalInfo').textContent = userInfoText;
+    } catch (error) {
+        console.error('Error loading current user:', error);
+        document.getElementById('principalInfo').textContent = 'User info not available';
+    }
+}
+
+
+// Открытие модального окна для удаления пользователя
 function openDeleteModalById(id) {
     const user = usersCache.find(u => u.id === id);
     if (!user) return;
 
     document.getElementById("deleteId").value = user.id;
-    document.getElementById("deleteName").innerText = user.name;
-    document.getElementById("deleteAge").innerText = user.age;
-    document.getElementById("deleteEmail").innerText = user.email;
-    document.getElementById("deleteRoles").innerText = user.roles.map(r => r.role.replace("ROLE_", "")).join(", ");
+    document.getElementById("deleteName").textContent = user.name;
+    document.getElementById("deleteAge").textContent = user.age;
+    document.getElementById("deleteEmail").textContent = user.email;
+    document.getElementById("deleteRoles").textContent = user.roles.map(r => r.role.replace("ROLE_", "")).join(", ");
 
     const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
     deleteModal.show();
 }
 
-
+// Открытие модального окна для редактирования пользователя
 function openEditModalById(id) {
     const user = usersCache.find(u => u.id === id);
     if (!user) return;
@@ -72,7 +98,7 @@ function openEditModalById(id) {
     document.getElementById("editName").value = user.name;
     document.getElementById("editAge").value = user.age;
     document.getElementById("editEmail").value = user.email;
-    document.getElementById("editPassword").value = ""; // пароль оставляем пустым для незменности
+    document.getElementById("editPassword").value = "";
 
     const select = document.getElementById("editRoles");
     loadRoles(select).then(() => {
@@ -85,11 +111,13 @@ function openEditModalById(id) {
     editModal.show();
 }
 
+// Инициализация при загрузке страницы
 document.addEventListener("DOMContentLoaded", () => {
     loadUsers();
     loadRoles(document.getElementById("newRoles"));
+    loadCurrentUser();
 
-
+    // Обработчик формы удаления пользователя
     document.getElementById("deleteForm").addEventListener("submit", async e => {
         e.preventDefault();
         const id = document.getElementById("deleteId").value;
@@ -105,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-
+    // Обработчик формы добавления пользователя
     document.getElementById("addForm").addEventListener("submit", async e => {
         e.preventDefault();
 
@@ -141,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-
+    // Обработчик формы редактирования пользователя
     document.getElementById("editForm").addEventListener("submit", async e => {
         e.preventDefault();
 
